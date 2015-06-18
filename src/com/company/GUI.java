@@ -15,6 +15,7 @@ Date: June 18, 2015
 Class: Enterprise Programming
 */
 
+// Sets listeners for GUI elements built using IntelliJ GUI creator.
 public class GUI {
 
     private JTable Table;
@@ -47,9 +48,11 @@ public class GUI {
     private MyResultSetTable resultSetTable;
 
     public GUI() {
+        //Adds combobox values
         JDBC.addItem(JDBC_DRIVER);
         dbURL.addItem(DATABASE_URL);
 
+        //Clears the text on SQL input text area
         clearCommandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -57,6 +60,7 @@ public class GUI {
             }
         });
 
+        //Clears the JTable of SQL results
         clearResultsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,6 +69,7 @@ public class GUI {
             }
         });
 
+        //Connects to DB using give Username,Password,JDBC Driver and DB address.
         connectToDatabaseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -74,10 +79,15 @@ public class GUI {
                 DB = dbURL.getSelectedItem().toString();
 
                 try {
+                    //JDBC Driver load
                     Class.forName(JDBC_VAL);
+
+                    //Set DB connection
                     dbConnection = DriverManager.getConnection(DB, USERNAME, PASSWORD);
                     ConectionMessage.setText("Connected to " + DB);
                     ConectionMessage.setVisible(true);
+
+                    //Creates statement to be used by program
                     statement = dbConnection.createStatement(
                             ResultSet.TYPE_SCROLL_INSENSITIVE,
                             ResultSet.CONCUR_READ_ONLY);
@@ -95,17 +105,24 @@ public class GUI {
             }
         });
 
+        //Runs the SQL query written by user.
         executeSQLCommandButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (connected) {
                     SQL_VAL = SQLcommand.getText();
                     try {
+                        //Clears table
                         Table = new JTable();
                         scrollpane.setViewportView(Table);
+
+                        // Create a new resultSetTable using the query
                         resultSetTable = new MyResultSetTable(dbConnection, statement, SQL_VAL);
+
+                        //Create and sets new table based on result set table
                         Table = new JTable(resultSetTable);
                         scrollpane.setViewportView(Table);
+
                     } catch (SQLException e1) {
                         JOptionPane.showMessageDialog(null, e1.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -115,6 +132,7 @@ public class GUI {
             }
         });
     }
+    //Disconnects from database
     public void disconnectFromDatabase(){
         if ( !connected ){ return; }
 

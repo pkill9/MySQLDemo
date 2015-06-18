@@ -52,6 +52,7 @@ public class MyResultSetTable extends AbstractTableModel{
 
     }
 
+    // Runs executeUpdate on query
     private void setUpdate(String query) throws SQLException {
 
         res = statement.executeUpdate(query);
@@ -88,21 +89,19 @@ public class MyResultSetTable extends AbstractTableModel{
         return null;
     }
 
+    // Gets the class of each column
     public Class getColumnClass (int columnIndex){
         try {
             String className = metaData.getColumnClassName(columnIndex + 1);
             return Class.forName(className);
         }
-        catch (SQLException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
         return Object.class;
     }
 
+    // Get column name from metadata
     public String getColumnName (int columnIndex){
         try {
             return metaData.getColumnName(columnIndex+1);
